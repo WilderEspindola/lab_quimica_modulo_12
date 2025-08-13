@@ -16,14 +16,26 @@ public class ParticleControllerFire : MonoBehaviour
     [Header("Eventos de Cambio de Temperatura")]
     public System.Action<float> OnTemperatureChanged; // Temperatura en Kelvin
 
+    [Header("Efectos de Sonido")]
+    public AudioClip fireSound;          // Sonido del fuego (arrastrar el clip desde el Inspector)
+    public AudioSource fireAudioSource;  // AudioSource asignado al mismo objeto
+    [Range(0, 1)] public float fireVolume = 0.5f; // Volumen ajustable
+
     private float currentKelvin;
     private bool isHeating = false;
 
     void Start()
     {
-        // Inicializar temperatura
         currentKelvin = minTemperature;
         UpdateTemperatureDisplay();
+
+        // Precarga el sonido
+        if (fireAudioSource != null && fireSound != null)
+        {
+            fireAudioSource.clip = fireSound;
+            fireAudioSource.loop = true;
+            fireAudioSource.volume = fireVolume;
+        }
     }
 
     void Update()
@@ -48,6 +60,13 @@ public class ParticleControllerFire : MonoBehaviour
         {
             targetParticleSystemFire.Play();
         }
+
+        // Inicia sonido
+        if (fireAudioSource != null && !fireAudioSource.isPlaying)
+        {
+            fireAudioSource.Play();
+        }
+
         isHeating = true;
     }
 
@@ -57,6 +76,13 @@ public class ParticleControllerFire : MonoBehaviour
         {
             targetParticleSystemFire.Stop();
         }
+
+        // Detiene sonido
+        if (fireAudioSource != null)
+        {
+            fireAudioSource.Stop();
+        }
+
         isHeating = false;
     }
 
