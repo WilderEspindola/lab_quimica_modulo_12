@@ -49,6 +49,13 @@ public class DualPartButton : MonoBehaviour
     private float initialPistonY;
     private float currentPressure;
 
+    [Header("Efectos de Sonido")]
+    public AudioClip hydraulicSound;  // Único sonido para ambos movimientos
+    public AudioSource pistonAudioSource;
+    [Range(0, 1)] public float soundVolume = 0.4f;
+
+    private bool wasMovingLastFrame = false;
+
     void Start()
     {
         // 1. Inicializar posiciones de las partes móviles
@@ -82,6 +89,14 @@ public class DualPartButton : MonoBehaviour
 
         // 4. Forzar valores iniciales exactos
         ForceInitialValues();
+
+        if (pistonAudioSource != null && hydraulicSound != null)
+        {
+            pistonAudioSource.clip = hydraulicSound;
+            pistonAudioSource.loop = true;
+            pistonAudioSource.Play();
+            pistonAudioSource.Pause(); // Precarga sin reproducir
+        }
     }
 
     private void ForceInitialValues()
@@ -122,6 +137,10 @@ public class DualPartButton : MonoBehaviour
             ControlPistonMovement();
             UpdateVolumeUI();
             UpdatePressureUI();
+        }
+        if (pistonAudioSource != null)
+        {
+            pistonAudioSource.volume = soundVolume; // Fuerza el valor actual
         }
     }
 
@@ -166,12 +185,23 @@ public class DualPartButton : MonoBehaviour
     private void OnButtonReleased(SelectExitEventArgs args)
     {
         isPressed = false;
+
+        // Detener sonido inmediatamente al soltar
+        if (pistonAudioSource != null)
+        {
+            pistonAudioSource.Stop();
+        }
     }
 
     private void ControlPistonMovement()
     {
         float direction = isOnButton ? -1f : 1f;
         Vector3 newPos = piston.localPosition;
+        bool isMoving = !Mathf.Approximately(newPos.y, Mathf.Clamp(
+            newPos.y + (direction * pistonSpeed * Time.deltaTime),
+            minPistonHeight,
+            maxPistonHeight
+        ));
 
         newPos.y = Mathf.Clamp(
             newPos.y + (direction * pistonSpeed * Time.deltaTime),
@@ -179,8 +209,28 @@ public class DualPartButton : MonoBehaviour
             maxPistonHeight
         );
 
+        // Control de audio preciso
+        if (pistonAudioSource != null && hydraulicSound != null)
+        {
+            if (isPressed && isMoving)
+            {
+                if (!pistonAudioSource.isPlaying)
+                {
+                    pistonAudioSource.clip = hydraulicSound;
+                    pistonAudioSource.loop = true;
+                    pistonAudioSource.volume = soundVolume;
+                    pistonAudioSource.Play();
+                }
+            }
+            else
+            {
+                pistonAudioSource.Stop();
+            }
+        }
+
         piston.localPosition = newPos;
         SyncVolumeUIWithPiston();
+        wasMovingLastFrame = isMoving;
     }
 
     private void SyncVolumeUIWithPiston()
