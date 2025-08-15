@@ -413,16 +413,12 @@ public class FlowManager : MonoBehaviour
 
     private void CheckChemicalBalance()
     {
-        // 1. Inicializar mensaje de diagnóstico
+        // 1. Inicializar mensaje de diagnóstico (sin coeficientes)
         string debugMessage = "=== Validación ===\n";
-        debugMessage += $"Usando coeficientes: A={keypadValues['A']}, B={keypadValues['B']}, " +
-                      $"C={keypadValues['C']}, D={keypadValues['D']}, " +
-                      $"E={keypadValues['E']}, F={keypadValues['F']}\n";
 
         // 2. Verificar ecuación existente
         if (currentEquation == null)
         {
-            //GameManager.Instance.UI_Messages.text = "Error: No hay ecuación activa";
             return;
         }
 
@@ -483,14 +479,16 @@ public class FlowManager : MonoBehaviour
         }
 
         // 8. Resultado final
-        debugMessage += isBalanced ? "✅ BALANCEADA" : "❌ DESBALANCEADA";
-        GameManager.Instance.UI_Messages.text = debugMessage;
-
-        // Activar gesto si está balanceada
         if (isBalanced)
         {
+            GameManager.Instance.UI_Messages.text = "<align=center>¡¡ ECUACIÓN BALANCEADA !!\n" +
+                                             "<color=#000000><b>!!haz un gesto para salir!!</b></color></align>";
             GameManager.Instance.LeftThumbsUp.gameObject.SetActive(true);
-            GameManager.Instance.Timer.enabled = false; // Detener temporizador si se balanceó antes
+            GameManager.Instance.Timer.enabled = false;
+        }
+        else
+        {
+            GameManager.Instance.UI_Messages.text = debugMessage;
         }
     }
 
