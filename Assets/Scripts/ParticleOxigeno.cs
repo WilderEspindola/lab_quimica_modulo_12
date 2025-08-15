@@ -6,7 +6,12 @@ public class ParticleOxigeno : MonoBehaviour
     public ParticleSystem targetParticleSystem;
 
     [Header("Referencia UI")]
-    public GameObject reportButton; // Arrastra el botón de reporte aquí
+    public GameObject reportButton;
+
+    [Header("Configuración de Sonido")]
+    public AudioClip oxygenReleaseSound;  // Sonido de oxígeno liberándose
+    public AudioSource gasAudioSource;    // Componente AudioSource
+    [Range(0, 1)] public float gasVolume = 0.6f; // Volumen ajustable
 
     private void Start()
     {
@@ -14,6 +19,15 @@ public class ParticleOxigeno : MonoBehaviour
         if (reportButton != null)
         {
             reportButton.SetActive(false);
+        }
+
+        // Configuración inicial del audio
+        if (gasAudioSource != null && oxygenReleaseSound != null)
+        {
+            gasAudioSource.clip = oxygenReleaseSound;
+            gasAudioSource.loop = true;
+            gasAudioSource.volume = gasVolume;
+            gasAudioSource.playOnAwake = false;
         }
     }
 
@@ -23,10 +37,16 @@ public class ParticleOxigeno : MonoBehaviour
         {
             targetParticleSystem.Play();
 
-            // Mostrar el botón de reporte cuando se inician las partículas
+            // Mostrar el botón de reporte
             if (reportButton != null)
             {
                 reportButton.SetActive(true);
+            }
+
+            // Iniciar sonido de gas
+            if (gasAudioSource != null && !gasAudioSource.isPlaying)
+            {
+                gasAudioSource.Play();
             }
         }
     }
@@ -37,10 +57,16 @@ public class ParticleOxigeno : MonoBehaviour
         {
             targetParticleSystem.Stop();
 
-            // Ocultar el botón de reporte cuando se detienen las partículas
+            // Ocultar el botón de reporte
             if (reportButton != null)
             {
                 reportButton.SetActive(false);
+            }
+
+            // Detener sonido de gas
+            if (gasAudioSource != null)
+            {
+                gasAudioSource.Stop();
             }
         }
     }
