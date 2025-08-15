@@ -23,8 +23,19 @@ public class FlowManager : MonoBehaviour
     private Dictionary<char, string> variableAssignments = new Dictionary<char, string>();
     private Dictionary<char, int> keypadValues = new Dictionary<char, int>();
 
+    // Añade esta variable al inicio de la clase FlowManager
+    [Header("Efectos de Sonido")]
+    [SerializeField] private AudioClip victorySound;
+    private AudioSource audioSource;
+
     void Start()
     {
+        // Obtener o añadir AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
         InitializeKeypadValues();
         InitializeGame();
         KeypadLock.OnKeypadValueChanged += UpdateKeypadValue;    // A
@@ -33,6 +44,7 @@ public class FlowManager : MonoBehaviour
         KeypadLock4.OnKeypadValueChanged += UpdateKeypadValue;   // D
         KeypadLock5.OnKeypadValueChanged += UpdateKeypadValue;   // E
         KeypadLock6.OnKeypadValueChanged += UpdateKeypadValue;   // F
+
     }
 
     private void InitializeKeypadValues()
@@ -479,12 +491,19 @@ public class FlowManager : MonoBehaviour
         }
 
         // 8. Resultado final
+        // Modifica la sección de ecuación balanceada
         if (isBalanced)
         {
             GameManager.Instance.UI_Messages.text = "<align=center>¡¡ ECUACIÓN BALANCEADA !!\n" +
-                                             "<color=#000000><b>!!haz un gesto para salir!!</b></color></align>";
+                                                 "<color=#000000><b>!!haz un gesto para salir!!</b></color></align>";
             GameManager.Instance.LeftThumbsUp.gameObject.SetActive(true);
             GameManager.Instance.Timer.enabled = false;
+
+            // Reproducir sonido de victoria (si no se está reproduciendo ya)
+            if (victorySound != null && !audioSource.isPlaying)
+            {
+                audioSource.PlayOneShot(victorySound);
+            }
         }
         else
         {

@@ -17390,6 +17390,7 @@ MonoBehaviour:
   - {fileID: 1589063186}
   - {fileID: 451793116}
   - {fileID: 737487745}
+  victorySound: {fileID: 8300000, guid: 4b2a1d89b89c34543a499b0ccb0ea9e8, type: 3}
 --- !u!1001 &381487637
 PrefabInstance:
   m_ObjectHideFlags: 0
