@@ -14703,9 +14703,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetParticleSystem: {fileID: 36417977}
   reportButton: {fileID: 2144245144}
-  oxygenReleaseSound: {fileID: 8300000, guid: 0e507d3f565c09448827cafe01bfe803, type: 3}
+  gasReleaseSound: {fileID: 8300000, guid: 0e507d3f565c09448827cafe01bfe803, type: 3}
   gasAudioSource: {fileID: 246145629}
   gasVolume: 0.545
+  pressureVolumeSource: {fileID: 16870266}
+  temperatureSource: {fileID: 498567356}
+  pressureLimit: 100
 --- !u!82 &246145629
 AudioSource:
   m_ObjectHideFlags: 0
@@ -77297,9 +77300,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetParticleSystem: {fileID: 1615786109}
   reportButton: {fileID: 2144245144}
-  hydrogenReleaseSound: {fileID: 8300000, guid: 192a7578fde410241b07e6219bab2697, type: 3}
+  gasReleaseSound: {fileID: 8300000, guid: 192a7578fde410241b07e6219bab2697, type: 3}
   gasAudioSource: {fileID: 1885768549}
   gasVolume: 0.5
+  pressureVolumeSource: {fileID: 16870266}
+  temperatureSource: {fileID: 498567356}
+  pressureLimit: 100
 --- !u!82 &1885768549
 AudioSource:
   m_ObjectHideFlags: 0
@@ -77447,6 +77453,9 @@ MonoBehaviour:
   gasReleaseSound: {fileID: 8300000, guid: 3572012da28034544883b30012465248, type: 3}
   gasAudioSource: {fileID: 1886366655}
   gasVolume: 0.919
+  pressureVolumeSource: {fileID: 16870266}
+  temperatureSource: {fileID: 498567356}
+  pressureLimit: 100
 --- !u!82 &1886366655
 AudioSource:
   m_ObjectHideFlags: 0
@@ -82366,7 +82375,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.14
+      scalar: 0.13
       minScalar: 1
       maxCurve:
         serializedVersion: 2

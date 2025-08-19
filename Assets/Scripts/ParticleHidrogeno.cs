@@ -9,22 +9,62 @@ public class ParticleHidrogeno : MonoBehaviour
     public GameObject reportButton;
 
     [Header("Configuración de Sonido")]
-    public AudioClip hydrogenReleaseSound;
+    public AudioClip gasReleaseSound;
     public AudioSource gasAudioSource;
-    [Range(0, 1)] public float gasVolume = 0.6f;
+    [Range(0, 1)] public float gasVolume = 0.7f;
+
+    [Header("Fuentes de Datos")]
+    public DualPartButton pressureVolumeSource;
+    public ParticleControllerFire temperatureSource;
+
+    [Header("Límite de Presión")]
+    public float pressureLimit = 100f; // Límite de presión en atm
+
+    // Propiedades solo para obtener los datos
+    public float CurrentPressure { get; private set; }
+    public float CurrentVolume { get; private set; }
+    public float CurrentTemperature { get; private set; }
+
+    private void Update()
+    {
+        // Solo obtener los datos de las fuentes originales
+        if (pressureVolumeSource != null)
+        {
+            CurrentPressure = pressureVolumeSource.GetCurrentPressure();
+            CurrentVolume = pressureVolumeSource.GetCurrentVolume();
+        }
+
+        if (temperatureSource != null)
+        {
+            CurrentTemperature = temperatureSource.GetCurrentTemperature();
+        }
+
+        // Verificar si la presión supera el límite y detener partículas
+        CheckPressureLimit();
+    }
+
+    private void CheckPressureLimit()
+    {
+        if (targetParticleSystem != null && targetParticleSystem.isPlaying)
+        {
+            if (CurrentPressure > pressureLimit)
+            {
+                Debug.Log($"Presión demasiado alta ({CurrentPressure:0.00} atm > {pressureLimit} atm). Deteniendo partículas.");
+                StopParticles();
+            }
+        }
+    }
 
     private void Start()
     {
-        // Ocultar el botón al inicio
         if (reportButton != null)
         {
             reportButton.SetActive(false);
         }
 
-        // Configuración inicial del audio
-        if (gasAudioSource != null && hydrogenReleaseSound != null)
+        if (gasAudioSource != null && gasReleaseSound != null)
         {
-            gasAudioSource.clip = hydrogenReleaseSound;
+            gasAudioSource.clip = gasReleaseSound;
             gasAudioSource.loop = true;
             gasAudioSource.volume = gasVolume;
         }
@@ -34,15 +74,20 @@ public class ParticleHidrogeno : MonoBehaviour
     {
         if (targetParticleSystem != null)
         {
+            // Verificar presión antes de iniciar
+            if (CurrentPressure > pressureLimit)
+            {
+                Debug.LogWarning($"No se pueden iniciar partículas. Presión demasiado alta: {CurrentPressure:0.00} atm");
+                return;
+            }
+
             targetParticleSystem.Play();
 
-            // Mostrar el botón de reporte
             if (reportButton != null)
             {
                 reportButton.SetActive(true);
             }
 
-            // Iniciar sonido de gas
             if (gasAudioSource != null && !gasAudioSource.isPlaying)
             {
                 gasAudioSource.Play();
@@ -56,13 +101,11 @@ public class ParticleHidrogeno : MonoBehaviour
         {
             targetParticleSystem.Stop();
 
-            // Ocultar el botón de reporte
             if (reportButton != null)
             {
                 reportButton.SetActive(false);
             }
 
-            // Detener sonido de gas
             if (gasAudioSource != null)
             {
                 gasAudioSource.Stop();
