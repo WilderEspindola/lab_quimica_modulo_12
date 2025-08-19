@@ -9,9 +9,9 @@ public class ParticleControllerFire : MonoBehaviour
     [Header("Configuración de Temperatura")]
     public TextMeshProUGUI temperatureDisplay; // Asignar el texto "X (°K)"
     public float minTemperature = 298f; // 298K = 25°C
-    public float maxTemperature = 800f; // 800K máximo
-    public float heatingRate = 2f;     // Grados K por segundo al calentar
-    public float coolingRate = 1f;     // Grados K por segundo al enfriar
+    public float maxTemperature = 2500f; // 800K máximo
+    public float heatingRate = 30f;     // Grados K por segundo al calentar
+    public float coolingRate = 20f;     // Grados K por segundo al enfriar
 
     [Header("Eventos de Cambio de Temperatura")]
     public System.Action<float> OnTemperatureChanged; // Temperatura en Kelvin

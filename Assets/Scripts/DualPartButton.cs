@@ -3,6 +3,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using TMPro;
+using System.Collections;
 
 [RequireComponent(typeof(XRSimpleInteractable))]
 public class DualPartButton : MonoBehaviour
@@ -34,7 +35,7 @@ public class DualPartButton : MonoBehaviour
     [Header("Medidor de Presión")]
     public TextMeshProUGUI pressureText;
     public float minPressure = 1f; // 1 atm
-    public float maxPressure = 15f; // 15 atm
+    public float maxPressure = 110f; // 15 atm
     public Color normalPressureColor = Color.white;
     public Color warningPressureColor = new Color(1f, 0.6f, 0f); // Naranja
     public Color dangerPressureColor = Color.red;
@@ -55,6 +56,12 @@ public class DualPartButton : MonoBehaviour
     [Range(0, 1)] public float soundVolume = 0.4f;
 
     private bool wasMovingLastFrame = false;
+    [Header("Sistema de Explosión")]
+    public GameObject cylinder; // Asigna el cilindro físico aquí
+    public AudioClip explosionSound; // Sonido de explosión
+    public float explosionThreshold = 100f; // Umbral de presión para explosión
+    public float resetDelay = 5f; // Tiempo en segundos para resetear
+    private bool hasExploded = false; // Control para una sola explosión
 
     void Start()
     {
@@ -142,6 +149,78 @@ public class DualPartButton : MonoBehaviour
         {
             pistonAudioSource.volume = soundVolume; // Fuerza el valor actual
         }
+        // Detectar explosión por presión
+        if (!hasExploded && currentPressure >= explosionThreshold)
+        {
+            TriggerExplosion();
+        }
+    }
+    private void TriggerExplosion()
+    {
+        hasExploded = true;
+
+        // Desactivar el cilindro
+        if (cylinder != null)
+        {
+            cylinder.SetActive(false);
+        }
+        // Desactivar el pistón (usando la referencia existente)
+        if (piston != null)
+        {
+            piston.gameObject.SetActive(false);
+        }
+
+        // Reproducir sonido de explosión
+        if (explosionSound != null)
+        {
+            AudioSource.PlayClipAtPoint(explosionSound, transform.position);
+        }
+
+        // Opcional: Detener todo movimiento
+        isPressed = false;
+        if (pistonAudioSource != null)
+        {
+            pistonAudioSource.Stop();
+        }
+        // Iniciar el reseteo después del delay
+        StartCoroutine(ResetSystemAfterDelay());
+        Debug.Log("¡EXPLOSIÓN! Presión crítica alcanzada: " + currentPressure + " atm");
+    }
+    private IEnumerator ResetSystemAfterDelay()
+    {
+        // Esperar el tiempo configurado
+        yield return new WaitForSeconds(resetDelay);
+
+        // Restablecer todo el sistema
+        ResetSystem();
+    }
+    public void ResetSystem()
+    {
+        // Reactivar el cilindro
+        if (cylinder != null)
+        {
+            cylinder.SetActive(true);
+        }
+
+        // Reactivar y resetear la posición del pistón
+        if (piston != null)
+        {
+            piston.gameObject.SetActive(true);
+            Vector3 pistonPos = piston.localPosition;
+            pistonPos.y = maxPistonHeight; // Posición completamente arriba
+            piston.localPosition = pistonPos;
+        }
+
+        // Resetear los valores de UI
+        ForceInitialValues();
+
+        // Resetear la bandera de explosión
+        hasExploded = false;
+
+        // Sincronizar UI
+        SyncVolumeUIWithPiston();
+
+        Debug.Log("Sistema reiniciado después de explosión");
     }
 
     private void AnimateButtonParts()
