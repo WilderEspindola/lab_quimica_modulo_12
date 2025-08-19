@@ -63,6 +63,18 @@ public class DualPartButton : MonoBehaviour
     public float resetDelay = 5f; // Tiempo en segundos para resetear
     private bool hasExploded = false; // Control para una sola explosión
 
+    [Header("Sistema de Gases")]
+    public ParticleOxigeno oxigenoController;
+    public ParticleHidrogeno hidrogenoController;
+    public ParticleDioxiodoCarbono co2Controller;
+
+    [Header("Límites de Presión por Gas")]
+    public float limiteVacio = 100f;
+    public float limiteOxigeno = 65f;
+    public float limiteHidrogeno = 85f;
+    public float limiteCO2 = 73f;
+
+    private string gasActivo = "VACIO";
     void Start()
     {
         // 1. Inicializar posiciones de las partes móviles
@@ -149,10 +161,42 @@ public class DualPartButton : MonoBehaviour
         {
             pistonAudioSource.volume = soundVolume; // Fuerza el valor actual
         }
-        // Detectar explosión por presión
-        if (!hasExploded && currentPressure >= explosionThreshold)
+        DetectarGasActivo();
+
+        // Detectar explosión por presión (modificado)
+        if (!hasExploded && currentPressure >= ObtenerLimiteActual())
         {
             TriggerExplosion();
+        }
+    }
+    private void DetectarGasActivo()
+    {
+        // Verificar qué gas está activo
+        if (oxigenoController != null && oxigenoController.targetParticleSystem.isPlaying)
+        {
+            gasActivo = "OXIGENO";
+        }
+        else if (hidrogenoController != null && hidrogenoController.targetParticleSystem.isPlaying)
+        {
+            gasActivo = "HIDROGENO";
+        }
+        else if (co2Controller != null && co2Controller.targetParticleSystem.isPlaying)
+        {
+            gasActivo = "CO2";
+        }
+        else
+        {
+            gasActivo = "VACIO";
+        }
+    }
+    private float ObtenerLimiteActual()
+    {
+        switch (gasActivo)
+        {
+            case "OXIGENO": return limiteOxigeno;
+            case "HIDROGENO": return limiteHidrogeno;
+            case "CO2": return limiteCO2;
+            default: return limiteVacio;
         }
     }
     private void TriggerExplosion()

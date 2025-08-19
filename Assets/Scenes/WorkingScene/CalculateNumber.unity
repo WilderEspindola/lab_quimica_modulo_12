@@ -516,6 +516,13 @@ MonoBehaviour:
   explosionSound: {fileID: 8300000, guid: 7322439c27bac8548ae5e0075634ad6e, type: 3}
   explosionThreshold: 100
   resetDelay: 10
+  oxigenoController: {fileID: 246145628}
+  hidrogenoController: {fileID: 1885768548}
+  co2Controller: {fileID: 1886366654}
+  limiteVacio: 100
+  limiteOxigeno: 65
+  limiteHidrogeno: 85
+  limiteCO2: 73
 --- !u!114 &16870267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14708,7 +14715,7 @@ MonoBehaviour:
   gasVolume: 0.545
   pressureVolumeSource: {fileID: 16870266}
   temperatureSource: {fileID: 498567356}
-  pressureLimit: 100
+  pressureLimit: 65
 --- !u!82 &246145629
 AudioSource:
   m_ObjectHideFlags: 0
@@ -22710,6 +22717,13 @@ MonoBehaviour:
   explosionSound: {fileID: 0}
   explosionThreshold: 100
   resetDelay: 5
+  oxigenoController: {fileID: 0}
+  hidrogenoController: {fileID: 0}
+  co2Controller: {fileID: 0}
+  limiteVacio: 100
+  limiteOxigeno: 65
+  limiteHidrogeno: 85
+  limiteCO2: 73
 --- !u!114 &564737164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77305,7 +77319,7 @@ MonoBehaviour:
   gasVolume: 0.5
   pressureVolumeSource: {fileID: 16870266}
   temperatureSource: {fileID: 498567356}
-  pressureLimit: 100
+  pressureLimit: 85
 --- !u!82 &1885768549
 AudioSource:
   m_ObjectHideFlags: 0
@@ -77455,7 +77469,7 @@ MonoBehaviour:
   gasVolume: 0.919
   pressureVolumeSource: {fileID: 16870266}
   temperatureSource: {fileID: 498567356}
-  pressureLimit: 100
+  pressureLimit: 73
 --- !u!82 &1886366655
 AudioSource:
   m_ObjectHideFlags: 0

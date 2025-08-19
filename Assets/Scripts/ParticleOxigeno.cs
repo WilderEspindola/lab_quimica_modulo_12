@@ -18,7 +18,7 @@ public class ParticleOxigeno : MonoBehaviour
     public ParticleControllerFire temperatureSource;
 
     [Header("Límite de Presión")]
-    public float pressureLimit = 100f; // Límite de presión en atm
+    public float pressureLimit = 65f; // Límite de presión en atm
 
     // Propiedades solo para obtener los datos
     public float CurrentPressure { get; private set; }
