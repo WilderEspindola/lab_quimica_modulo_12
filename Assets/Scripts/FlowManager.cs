@@ -26,6 +26,7 @@ public class FlowManager : MonoBehaviour
     // Añade esta variable al inicio de la clase FlowManager
     [Header("Efectos de Sonido")]
     [SerializeField] private AudioClip victorySound;
+    [SerializeField] private AudioClip defeatSound; // ← NUEVA VARIABLE
     private AudioSource audioSource;
 
     void Start()
@@ -181,11 +182,19 @@ public class FlowManager : MonoBehaviour
     private void OnCountdownFinished()
     {
         GameManager.Instance.Timer.enabled = false;
-        CheckChemicalBalance();
+
+        // Mostrar mensaje de derrota y reproducir sonido
+        GameManager.Instance.UI_Messages.text = "<align=center>¡¡UPS!! ECUACION DESBALANCEADA\n" +
+                                             "<color=#000000><b>!!haz un gesto para salir!!</b></color></align>";
+
+        if (defeatSound != null && !audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(defeatSound);
+        }
+
+        //CheckChemicalBalance();
         // Activar gesto de salida siempre al terminar el tiempo
         GameManager.Instance.LeftThumbsUp.gameObject.SetActive(true);
-
-
     }
 
     // --- Sistema Químico ---
