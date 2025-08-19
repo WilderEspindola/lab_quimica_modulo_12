@@ -169,7 +169,7 @@ public class FlowManager : MonoBehaviour
 
     private IEnumerator CountdownCoroutine()
     {
-        int countdownTime = 20; // para cambiar el tiempo de la prueba
+        int countdownTime = 30; // para cambiar el tiempo de la prueba
         while (countdownTime >= 0)
         {
             GameManager.Instance.Timer.GetComponent<TextMeshProUGUI>().text = countdownTime.ToString();

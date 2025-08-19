@@ -1,15 +1,30 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 public class KeypadButton : MonoBehaviour
 {
     public KeypadLock keypadLock;
     public string digitOrAction;
 
+    [Header("Sonido")]
+    [SerializeField] private AudioClip clickSound;
+    private AudioSource audioSource;
+
+    private void Start()
+    {
+        // Obtener o crear AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
+    }
+
     public void PressButton()
     {
         if (digitOrAction == "Enter")
         {
-            keypadLock.SaveCode(); // Este mÈtodo ahora hace m·s cosas, pero la llamada es igual
+            keypadLock.SaveCode();
         }
         else if (digitOrAction == "Clear")
         {
@@ -18,6 +33,17 @@ public class KeypadButton : MonoBehaviour
         else
         {
             keypadLock.AddDigit(digitOrAction);
+        }
+
+        // REPRODUCIR SONIDO AL FINAL ‚Üê despu√©s de todas las acciones
+        PlayClickSound();
+    }
+
+    private void PlayClickSound()
+    {
+        if (clickSound != null && !audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(clickSound);
         }
     }
 }

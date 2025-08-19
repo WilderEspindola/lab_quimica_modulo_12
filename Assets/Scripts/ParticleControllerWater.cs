@@ -1,18 +1,18 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ParticleControllerWater : MonoBehaviour
 {
-    [Header("Configuraci�n de Part�culas")]
-    public ParticleSystem targetParticleSystem; // Nombre m�s espec�fico
+    [Header("Configuración de Partículas")]
+    public ParticleSystem targetParticleSystem; // Nombre más específico
 
-    [Header("Configuraci�n de Sonido")]
+    [Header("Configuración de Sonido")]
     public AudioClip waterSound;
     public AudioSource waterAudioSource;
     [Range(0, 1)] public float soundVolume = 0.7f;
 
     private void Start()
     {
-        // Configuraci�n inicial del audio
+        // Configuración inicial del audio
         if (waterAudioSource != null && waterSound != null)
         {
             waterAudioSource.clip = waterSound;
