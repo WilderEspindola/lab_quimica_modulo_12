@@ -189,7 +189,7 @@ public class DualPartButton : MonoBehaviour
             gasActivo = "VACIO";
         }
     }
-    private float ObtenerLimiteActual()
+    public float ObtenerLimiteActual()
     {
         switch (gasActivo)
         {
